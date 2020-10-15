@@ -1,5 +1,7 @@
 <?php
 
+namespace DigiTickets\Savvy\Messages;
+
 use Omnipay\Common\Message\AbstractRequest;
 
 abstract class AbstractSavvyRequest extends AbstractRequest

@@ -2,6 +2,16 @@
 
 namespace DigiTickets\Savvy;
 
+use DigiTickets\OmnipayAbstractVoucher\AbstractVoucherGateway;
+use DigiTickets\Savvy\Messages\AuthorizeRequest;
+use DigiTickets\Savvy\Messages\PurchaseRequest;
+use DigiTickets\Savvy\Messages\RedeemRequest;
+use DigiTickets\Savvy\Messages\RefundRequest;
+use DigiTickets\Savvy\Messages\UnredeemRequest;
+use DigiTickets\Savvy\Messages\ValidateRequest;
+use Omnipay\Common\Message\AbstractRequest;
+use Omnipay\Common\Message\RequestInterface;
+
 /**
  * Class SavvyGateway
  *
@@ -20,7 +30,7 @@ namespace DigiTickets\Savvy;
  * @method RequestInterface deleteCard(array $options = array())        (Optional method)
  *         Delete a stored card
  */
-class SavvyGateway extends \DigiTickets\OmnipayAbstractVoucher\AbstractVoucherGateway
+class SavvyGateway extends AbstractVoucherGateway
 {
     public function getName()
     {
