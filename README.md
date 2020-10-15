@@ -4,6 +4,8 @@
 
 Omnipay implementation of Savvy Gift Card redemption. Obviously it's not a payment gateway, but it behaves in a similar way.
 
+See [their technical documentation](https://developer.savvyconnectdirect.net/) for more details.
+
 [![Build Status](https://travis-ci.org/digitickets/omnipay-savvy-gift-card.png?branch=master)](https://travis-ci.org/digitickets/omnipay-savvy-gift-card)
 [![Latest Stable Version](https://poser.pugx.org/digitickets/omnipay-savvy-gift-card/version.png)](https://packagist.org/packages/omnipay/savvy-gift-card)
 [![Total Downloads](https://poser.pugx.org/digitickets/omnipay-savvy-gift-card/d/total.png)](https://packagist.org/packages/digitickets/omnipay-savvy-gift-card)
