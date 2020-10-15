@@ -1,0 +1,42 @@
+{
+  "name": "digitickets/omnipay-savvy-gift-card",
+  "type": "library",
+  "description": "Savvy Gift Card driver for the Omnipay payment processing library",
+  "keywords": [
+    "Savvy",
+    "gateway",
+    "merchant",
+    "omnipay",
+    "web",
+    "service",
+    "gift card"
+  ],
+  "homepage": "https://github.com/digitickets/omnipay-savvy-gift-card",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Glenn Jenkins",
+      "email": "glenn.jenkins@digitickets.co.uk",
+      "role": "Developer"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "DigiTickets\\Savvy\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "DigiTickets\\Savvy\\": "tests/"
+    }
+  },
+  "require": {
+    "digitickets/omnipay-abstract-voucher": "^2.0",
+    "omnipay/common": "~2.0"
+  },
+  "require-dev": {
+    "omnipay/tests": "~2.0"
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
