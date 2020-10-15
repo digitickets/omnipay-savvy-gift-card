@@ -1,5 +1,7 @@
 <?php
 
+namespace DigiTickets\Savvy;
+
 /**
  * Class SavvyGateway
  *
@@ -40,47 +42,46 @@ class SavvyGateway extends \DigiTickets\OmnipayAbstractVoucher\AbstractVoucherGa
         return parent::createRequest($class, $parameters);
     }
 
-    // @TODO: All the requests and responses need to be build for the below methods to work.
-//    public function authorize(array $parameters = array())
-//    {
-//        return $this->createRequest(AuthorizeRequest::class, $parameters);
-//    }
-//
-//    public function purchase(array $parameters = array())
-//    {
-//        return $this->createRequest(PurchaseRequest::class, $parameters);
-//    }
-//
-//    public function refund(array $parameters = array())
-//    {
-//        $parameters['unredeemRequest'] = $this->unredeem($parameters);
-//        return $this->createRequest(RefundRequest::class, $parameters);
-//    }
+    public function authorize(array $parameters = array())
+    {
+        return $this->createRequest(AuthorizeRequest::class, $parameters);
+    }
 
-//    /**
-//     * @param array $parameters
-//     * @return AbstractRequest
-//     */
-//    public function validate(array $parameters = array())
-//    {
-//        return $this->createRequest(ValidateRequest::class, $parameters);
-//    }
-//
-//    /**
-//     * @param array $parameters
-//     * @return AbstractRequest
-//     */
-//    public function redeem(array $parameters = array())
-//    {
-//        return $this->createRequest(RedeemRequest::class, $parameters);
-//    }
-//
-//    /**
-//     * @param array $parameters
-//     * @return AbstractRequest
-//     */
-//    public function unredeem(array $parameters = array())
-//    {
-//        return $this->createRequest(UnredeemRequest::class, $parameters);
-//    }
+    public function purchase(array $parameters = array())
+    {
+        return $this->createRequest(PurchaseRequest::class, $parameters);
+    }
+
+    public function refund(array $parameters = array())
+    {
+        $parameters['unredeemRequest'] = $this->unredeem($parameters);
+        return $this->createRequest(RefundRequest::class, $parameters);
+    }
+
+    /**
+     * @param array $parameters
+     * @return AbstractRequest
+     */
+    public function validate(array $parameters = array())
+    {
+        return $this->createRequest(ValidateRequest::class, $parameters);
+    }
+
+    /**
+     * @param array $parameters
+     * @return AbstractRequest
+     */
+    public function redeem(array $parameters = array())
+    {
+        return $this->createRequest(RedeemRequest::class, $parameters);
+    }
+
+    /**
+     * @param array $parameters
+     * @return AbstractRequest
+     */
+    public function unredeem(array $parameters = array())
+    {
+        return $this->createRequest(UnredeemRequest::class, $parameters);
+    }
 }
