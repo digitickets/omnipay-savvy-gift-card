@@ -37,21 +37,6 @@ class SavvyGateway extends AbstractVoucherGateway
         return 'Savvy Gift Card';
     }
 
-    /**
-     * This is just a wrapper around the parent createRequest() and just adds an instance of this gateway to the parameters.
-     *
-     * @param string $class
-     * @param array $parameters
-     *
-     * @return \Omnipay\Common\Message\AbstractRequest
-     */
-    protected function createRequest($class, array $parameters)
-    {
-        $parameters['gateway'] = $this;
-
-        return parent::createRequest($class, $parameters);
-    }
-
     public function authorize(array $parameters = array())
     {
         return $this->createRequest(AuthorizeRequest::class, $parameters);
@@ -93,5 +78,17 @@ class SavvyGateway extends AbstractVoucherGateway
     public function unredeem(array $parameters = array())
     {
         return $this->createRequest(UnredeemRequest::class, $parameters);
+    }
+
+    public function setAdminTeamId($value) {
+        $this->setParameter('adminTeamId', $value);
+    }
+
+    public function setMerchantId($value) {
+        $this->setParameter('merchantId', $value);
+    }
+
+    public function setConnectDirectSubscriptionKey($value) {
+        $this->setParameter('connectDirectSubscriptionKey', $value);
     }
 }

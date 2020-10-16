@@ -6,31 +6,30 @@ class ValidateRequest extends AbstractSavvyRequest
 {
     public function getData()
     {
-        // @TODO: This needs to build/gather all the data - requestID, adminTeamId, cardNumber, PIN, etc
         return [
-            'requestId' => 'REQ_'.time(), // @TODO: Have a global method to return a unique ref.
-            'adminTeamId' => 1, // @TODO: From gateway params
-            'merchantId' => 'DZ20190907t', // @TODO: From gateway params
-            'cardNumber' => '6280399990524260', // @TODO: From card form values
-            'pin' => '14261819', // @TODO: From card form values
-            'currency' => '978' // @TODO: From gateway params
+            'requestId' => $this->generateGuid(),
+            'adminTeamId' => $this->getAdminTeamId(),
+            'merchantId' => $this->getMerchantId(),
+            'cardNumber' => $this->getCardNumber(),
+            'pin' => $this->getPin(),
+            'currency' => $this->getCurrency(),
         ];
     }
 
     public function sendData($data)
     {
-        // @TODO: This needs to call the API endpoint.
         // @TODO: We need to handle the logout having expired (or not existing at all).
-        $bearer = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IkNvbm5lY3REaXJlY3RUb2tlbiIsIk1lcmNoYW50SWQiOiJEWjIwMTkwOTA3dCIsIkFjcXVpcmVySWQiOiIxIiwibmJmIjoxNjAyODQxMzgyLCJleHAiOjE2MDI4NDMxODIsImlhdCI6MTYwMjg0MTM4MiwiaXNzIjoiU2F2dnlDb25uZWN0RGlyZWN0IiwiYXVkIjoiU2F2dnlDb25uZWN0RGlyZWN0In0.vxVP0ODBLs23PdL1_DdYpKzsWk-m1kECUiEY-JqVzQ0QvYwdSDNkLKYs_-Ef-0TyG6kYioJxZ0ovKnJ5wnrcxMn-p-2dh8tJYm4oZk5N2mNfQ08BUI9yZCxMabQygx0lRSP-BLrA0nzYmK0cghsVhn0rxWy6FrqZyyis396h8KBW-2hPEbrdBeTuEq5-09eETbOjucMyX_9qhatGBjaRrOA2WVrGT72ciq-U2CVu6PAhSBYwT8dimFNex3l9qhvNVeN9Zm6b0v3C7JfylAVVADSyhPFIO_-y1u-G5MSPOTw50rm5aaCbITzo0penI8b8iqEhGJZn0bgxu0guXbRhPQ';
+        // @TODO: It should be possible to move the headers stuff out to a central method.
+        $bearer = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IkNvbm5lY3REaXJlY3RUb2tlbiIsIk1lcmNoYW50SWQiOiJEWjIwMTkwOTA3dCIsIkFjcXVpcmVySWQiOiIxIiwibmJmIjoxNjAyODQ4MjA4LCJleHAiOjE2MDI4NTAwMDgsImlhdCI6MTYwMjg0ODIwOCwiaXNzIjoiU2F2dnlDb25uZWN0RGlyZWN0IiwiYXVkIjoiU2F2dnlDb25uZWN0RGlyZWN0In0.H2PNu9ccPzVX7Y9Em3StfHabs2YGUVYfcNN-ErIOPhAD46xneMN4RJc0WaI21lLBG3S9yc5RcO2goupVEgYe4Cb2DO2r1XcS9lLGZ0lkeyBcOx0vOI3HscuHjZvPVdLzD2raNOJ2TDevXiKS8GmNjyHeq7imTBWoEUTXVTUY611lbgifgnAH8H7ovWk7Rh1OgCJ68XPQ6FXNZ0aHE5A3DqyYkMnVIEYRRczJo_rsZ8gR6e78Q5W8igWdN-05BvGj-8SsrYgLjtj6-ND1srjkUrEGwLJrnTqk4G3muCixbi-aZfV4wPKRvSaMOubFVcoGcUSvElfhh2M-bGHCXDBaWQ';
         $headers = [
-            'Connect-Direct-Subscription-Key' => '586ab003ecb742e3a2dbeb90be14ad92',
+            'Connect-Direct-Subscription-Key' => $this->getConnectDirectSubscriptionKey(),
             'Authorization' => 'Bearer '.$bearer,
             'Content-Type' => 'application/json'
         ];
         $responseBody = $this->httpClient->post(
-            'https://api.savvyconnectdirect.net/sandbox/api/v1/balance',
+            $this->getUrl(),
             $headers,
-            $data
+            json_encode($data)
         )
         ->send()
         ->getBody();
