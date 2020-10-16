@@ -2,6 +2,6 @@
 
 namespace DigiTickets\Savvy\Messages;
 
-class ValidateRequest extends AbstractSavvyRequest
+class PurchaseRequest extends AbstractSavvyRequest
 {
 }

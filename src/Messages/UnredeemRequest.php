@@ -2,6 +2,6 @@
 
 namespace DigiTickets\Savvy\Messages;
 
-class RedeemRequest extends AbstractSavvyRequest
+class UnredeemRequest extends AbstractSavvyRequest
 {
 }
