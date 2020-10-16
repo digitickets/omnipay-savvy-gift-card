@@ -31,5 +31,13 @@ class ValidateRequest extends AbstractSavvyRequest
         ->send()
         ->getBody();
         $rawResponse = json_decode($responseBody); // Decode to stdClass
+
+        // Send all the information to any listeners.
+        foreach ($this->getGateway()->getListeners() as $listener) {
+            $listener->update('validateRequestSend' /*$this->getListenerAction()*/, $rawResponse);
+        }
+
+//        return $this->response = $this->buildResponse($this, $rawResponse);
+        return $this->response = new ValidateResponse($this, $rawResponse);
     }
 }

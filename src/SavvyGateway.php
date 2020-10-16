@@ -37,6 +37,13 @@ class SavvyGateway extends AbstractVoucherGateway
         return 'Savvy Gift Card';
     }
 
+    protected function createRequest($class, array $parameters)
+    {
+        $parameters['gateway'] = $this;
+
+        return parent::createRequest($class, $parameters);
+    }
+
     public function authorize(array $parameters = array())
     {
         return $this->createRequest(AuthorizeRequest::class, $parameters);

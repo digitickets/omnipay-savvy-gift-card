@@ -73,6 +73,16 @@ abstract class AbstractSavvyRequest extends AbstractRequest
         }
     }
 
+    public function setGateway($value)
+    {
+        $this->setParameter('gateway', $value);
+    }
+
+    public function getGateway()
+    {
+        return $this->getParameter('gateway');
+    }
+
     protected function generateGuid()
     {
         // Found this code online. Is there an alternative already in the system? Should this be made global?
