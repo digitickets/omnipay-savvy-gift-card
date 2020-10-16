@@ -88,6 +88,10 @@ class SavvyGateway extends AbstractVoucherGateway
         $this->setParameter('merchantId', $value);
     }
 
+    public function setPassword($value) {
+        $this->setParameter('password', $value);
+    }
+
     public function setConnectDirectSubscriptionKey($value) {
         $this->setParameter('connectDirectSubscriptionKey', $value);
     }

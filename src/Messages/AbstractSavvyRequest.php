@@ -22,17 +22,55 @@ abstract class AbstractSavvyRequest extends AbstractRequest
         return sprintf('%s/%s', $this->getUrlStem(), $this->getEndpoint());
     }
 
-    protected function buildHeaders()
+    protected function buildHeaders(bool $includeToken = true)
     {
-        // @TODO: We need to handle the logout having expired (or not existing at all).
-        $bearer = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IkNvbm5lY3REaXJlY3RUb2tlbiIsIk1lcmNoYW50SWQiOiJEWjIwMTkwOTA3dCIsIkFjcXVpcmVySWQiOiIxIiwibmJmIjoxNjAyODQ4MjA4LCJleHAiOjE2MDI4NTAwMDgsImlhdCI6MTYwMjg0ODIwOCwiaXNzIjoiU2F2dnlDb25uZWN0RGlyZWN0IiwiYXVkIjoiU2F2dnlDb25uZWN0RGlyZWN0In0.H2PNu9ccPzVX7Y9Em3StfHabs2YGUVYfcNN-ErIOPhAD46xneMN4RJc0WaI21lLBG3S9yc5RcO2goupVEgYe4Cb2DO2r1XcS9lLGZ0lkeyBcOx0vOI3HscuHjZvPVdLzD2raNOJ2TDevXiKS8GmNjyHeq7imTBWoEUTXVTUY611lbgifgnAH8H7ovWk7Rh1OgCJ68XPQ6FXNZ0aHE5A3DqyYkMnVIEYRRczJo_rsZ8gR6e78Q5W8igWdN-05BvGj-8SsrYgLjtj6-ND1srjkUrEGwLJrnTqk4G3muCixbi-aZfV4wPKRvSaMOubFVcoGcUSvElfhh2M-bGHCXDBaWQ';
+        $headers = [
+            'Connect-Direct-Subscription-Key' => $this->getConnectDirectSubscriptionKey(),
+            'Content-Type' => 'application/json',
+        ];
 
-        return
-            [
-                'Connect-Direct-Subscription-Key' => $this->getConnectDirectSubscriptionKey(),
-                'Authorization' => sprintf('Bearer %s', $bearer),
-                'Content-Type' => 'application/json',
-            ];
+        // If the calling code needs the "session" token, make sure we've got it, then add it to the parameters.
+        if ($includeToken) {
+            // We need the token from the last login (which might have expired, of course). If there isn't one at all,
+            // we definitely have to log in again. If there is one, we try it and if the response is "token has
+            // expired", we log in and try the request again.
+            $token = $this->getToken();
+            if (is_null($token)) {
+                // Log in and get a new token.
+                $this->login();
+                $token = $this->getToken();
+            }
+            $headers['Authorization'] = sprintf('Bearer %s', $token);
+        }
+
+        return $headers;
+    }
+
+    /**
+     * @TODO: We need to make this a bit nicer, but leave it for now.
+     */
+    protected function login()
+    {
+        // Make the login ("get token") request.
+        $responseBody = $this->httpClient->post(
+            sprintf('%s/auth/get-token', $this->getUrlStem()),
+            $this->buildHeaders(false),
+            json_encode(
+                [
+                    'adminTeamId' => $this->getAdminTeamId(),
+                    'merchantId' => $this->getMerchantId(),
+                    'password' => $this->getPassword(),
+                ]
+            )
+        )
+        ->send()
+        ->getBody();
+        $rawResponse = json_decode($responseBody); // Decode to stdClass
+        // Get the token out of the response.
+        // @TODO: We need to handle errors, somehow.
+        if ($rawResponse->authenticated === true) {
+            $this->setToken($rawResponse->token);
+        }
     }
 
     protected function generateGuid()
@@ -65,6 +103,14 @@ abstract class AbstractSavvyRequest extends AbstractRequest
 
     protected function getMerchantId() {
         return $this->getParameter('merchantId');
+    }
+
+    public function setPassword($value) {
+        $this->setParameter('password', $value);
+    }
+
+    protected function getPassword() {
+        return $this->getParameter('password');
     }
 
     public function setConnectDirectSubscriptionKey($value) {
