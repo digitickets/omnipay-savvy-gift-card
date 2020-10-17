@@ -28,8 +28,8 @@ class ValidateRequest extends AbstractSavvyRequest
             $this->buildHeaders(),
             json_encode($data)
         )
-        ->send()
-        ->getBody();
+            ->send()
+            ->getBody();
         $rawResponse = json_decode($responseBody); // Decode to stdClass
         // The PIN is not included in the response, so we have to add it.
         $rawResponse->pin = $data['pin'] ?? null;
