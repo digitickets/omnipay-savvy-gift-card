@@ -31,6 +31,8 @@ class ValidateRequest extends AbstractSavvyRequest
         ->send()
         ->getBody();
         $rawResponse = json_decode($responseBody); // Decode to stdClass
+        // The PIN is not included in the response, so we have to add it.
+        $rawResponse->pin = $data['pin'] ?? null;
 
         // Send all the information to any listeners.
         foreach ($this->getGateway()->getListeners() as $listener) {

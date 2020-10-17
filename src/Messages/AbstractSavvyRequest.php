@@ -68,7 +68,9 @@ abstract class AbstractSavvyRequest extends AbstractRequest
         $rawResponse = json_decode($responseBody); // Decode to stdClass
         // Get the token out of the response.
         // @TODO: We need to handle errors, somehow.
-        if ($rawResponse->authenticated === true) {
+        if (property_exists($rawResponse, 'authenticated') &&
+            property_exists($rawResponse, 'token') &&
+            $rawResponse->authenticated === true) {
             $this->setToken($rawResponse->token);
         }
     }
