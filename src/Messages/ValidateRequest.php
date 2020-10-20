@@ -17,7 +17,7 @@ class ValidateRequest extends AbstractSavvyRequest
             'merchantId' => $this->getMerchantId(),
             'cardNumber' => $this->getCardNumber(),
             'pin' => $this->getPin(),
-            'currency' => $this->getCurrency(),
+            'currency' => $this->currencyCodeToNumber($this->getCurrency()),
         ];
     }
 

@@ -101,6 +101,28 @@ abstract class AbstractSavvyRequest extends AbstractRequest
         return $uuid;
     }
 
+    /**
+     * The Savvy API requires the currency type as a number, eg "978" for Euros. However, the Omnipay
+     * standard is to pass in the currency code, eg "EUR" for Euros, so we have to cope with the code
+     * being present.
+     * So, if it looks like a code, convert it to the number; otherwise leave it as it is. Therefore 'GBP'
+     * maps to '826', '978' maps to '978', 'AED' maps to 'AED'.
+     * Note also that the currency numbers have to be a string.
+     *
+     * @param $currencyCode
+     * @return int
+     */
+    public function currencyCodeToNumber($currencyCode)
+    {
+        $map = [
+            'GBP' => '826',
+            'EUR' => '978',
+            'USD' => '840',
+        ];
+
+        return (array_key_exists($currencyCode, $map) ? $map[$currencyCode] : $currencyCode );
+    }
+
     public function setAdminTeamId($value) {
         $this->setParameter('adminTeamId', $value);
     }
