@@ -17,23 +17,15 @@ class PurchaseRequest extends AbstractSavvyRequest
             'merchantId' => $this->getMerchantId(),
             'cardNumber' => $this->getCardNumber(),
             'pin' => $this->getPin(),
-            'currency' => $this->getCurrency(),
+            'currency' => $this->currencyCodeToNumber($this->getCurrency()), // @TODO: We need a common "getCurrencyNumber()" method.
             'amount' => (float) $this->getAmount(), // API endpoint crashes if this is not a float!
         ];
     }
 
     public function sendData($data)
     {
-        $responseBody = $this->httpClient->post(
-            $this->getUrl(),
-            $this->buildHeaders(),
-            json_encode($data)
-        )
-            ->send()
-            ->getBody();
-        $rawResponse = json_decode($responseBody); // Decode to stdClass
+        $rawResponse = $this->sendMessage($data);
 
-//        return $this->response = $this->buildResponse($this, $rawResponse);
-        return $this->response = new PurchaseResponse($this, $rawResponse);
+        return $this->response = new PurchaseResponse($this, $rawResponse, $this->getToken());
     }
 }

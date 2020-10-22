@@ -2,7 +2,7 @@
 
 namespace DigiTickets\Savvy\Messages;
 
-class PurchaseResponse extends AbstractSavvyResponse
+class RefundResponse extends AbstractSavvyResponse
 {
     private $cardNumber;
     private $authCode;
@@ -16,7 +16,7 @@ class PurchaseResponse extends AbstractSavvyResponse
         if ($this->success) {
             $this->cardNumber = property_exists($this->response, 'cardNumber') ? $this->response->cardNumber : 'no card number was supplied';
             $this->authCode = property_exists($this->response, 'authCode') ? $this->response->authCode : 'no reference was supplied';
-            $this->message = 'Redeemed';
+            $this->message = 'Unredeemed';
         } else {
             $this->message = property_exists($this->response, 'responseText') ? $this->response->responseText : 'Unknown error';
         }

@@ -17,20 +17,13 @@ class ValidateRequest extends AbstractSavvyRequest
             'merchantId' => $this->getMerchantId(),
             'cardNumber' => $this->getCardNumber(),
             'pin' => $this->getPin(),
-            'currency' => $this->currencyCodeToNumber($this->getCurrency()),
+            'currency' => $this->currencyCodeToNumber($this->getCurrency()), // @TODO: We need a common "getCurrencyNumber()" method.
         ];
     }
 
     public function sendData($data)
     {
-        $responseBody = $this->httpClient->post(
-            $this->getUrl(),
-            $this->buildHeaders(),
-            json_encode($data)
-        )
-            ->send()
-            ->getBody();
-        $rawResponse = json_decode($responseBody); // Decode to stdClass
+        $rawResponse = $this->sendMessage($data);
         // The PIN is not included in the response, so we have to add it.
         $rawResponse->pin = $data['pin'] ?? null;
 
@@ -39,7 +32,6 @@ class ValidateRequest extends AbstractSavvyRequest
             $listener->update('validateRequestSend' /*$this->getListenerAction()*/, $rawResponse);
         }
 
-//        return $this->response = $this->buildResponse($this, $rawResponse);
-        return $this->response = new ValidateResponse($this, $rawResponse);
+        return $this->response = new ValidateResponse($this, $rawResponse, $this->getToken());
     }
 }

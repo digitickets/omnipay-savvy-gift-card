@@ -75,6 +75,44 @@ abstract class AbstractSavvyRequest extends AbstractRequest
         }
     }
 
+    /**
+     * We have to extract this out because we may have an auth token, but it might have expired. If that's the case,
+     * we need to try _once_ to login and re-send the message, hence needing the $firstAttempt parameter. It also
+     * means this logic is in one place, rather than in each request class.
+     *
+     * @param $data
+     * @param bool $firstAttempt
+     *
+     * @return mixed
+     */
+    protected function sendMessage($data, bool $firstAttempt = true)
+    {
+        try {
+            $responseBody = $this->httpClient->post(
+                $this->getUrl(),
+                $this->buildHeaders(),
+                json_encode($data)
+            )
+                ->send()
+                ->getBody();
+            $rawResponse = json_decode($responseBody); // Decode to stdClass
+        } catch (\Exception $e) {
+            $message = (string) $e->getMessage();
+            // If this is the first attempt to send the message and the exception was because the auth token is
+            // invalid, we need to explicitly log in (thereby refreshing the token) and try again.
+            // It's hard to know how to reliably test for that specific error. We can't test the status code because
+            // it throws an exception without instantiating the response object.
+            if ($firstAttempt && strpos($message, '401') !== false && strpos($message, 'Unauthorized') !== false) {
+                $this->login();
+                $rawResponse = $this->sendMessage($data, false);
+            } else {
+                throw $e;
+            }
+        }
+
+        return $rawResponse;
+    }
+
     public function setGateway($value)
     {
         $this->setParameter('gateway', $value);
@@ -187,6 +225,14 @@ abstract class AbstractSavvyRequest extends AbstractRequest
 
     protected function getPin() {
         return $this->getParameter('pin');
+    }
+
+    public function setAuthCode($value) {
+        $this->setParameter('authCode', $value);
+    }
+
+    protected function getAuthCode() {
+        return $this->getParameter('authCode');
     }
 
     public function getData()
