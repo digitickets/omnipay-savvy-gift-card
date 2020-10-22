@@ -2,10 +2,12 @@
 
 namespace DigiTickets\Savvy\Messages;
 
-class AuthorizeRequest extends AbstractSavvyRequest
+use Omnipay\Common\Message\RequestInterface;
+
+class AuthorizeRequest extends ValidateRequest
 {
-    protected function getEndpoint()
+    protected function buildResponse(RequestInterface $request, $response, string $token = null)
     {
-        return 'TBC';
+        return new AuthorizeResponse($request, $response, $token);
     }
 }

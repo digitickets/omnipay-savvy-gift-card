@@ -2,6 +2,8 @@
 
 namespace DigiTickets\Savvy\Messages;
 
+use Omnipay\Common\Message\RequestInterface;
+
 class ValidateRequest extends AbstractSavvyRequest
 {
     protected function getEndpoint()
@@ -32,6 +34,11 @@ class ValidateRequest extends AbstractSavvyRequest
             $listener->update('validateRequestSend' /*$this->getListenerAction()*/, $rawResponse);
         }
 
-        return $this->response = new ValidateResponse($this, $rawResponse, $this->getToken());
+        return $this->response = $this->buildResponse($this, $rawResponse, $this->getToken());
+    }
+
+    protected function buildResponse(RequestInterface $request, $response, string $token = null)
+    {
+        return new ValidateResponse($request, $response, $token);
     }
 }

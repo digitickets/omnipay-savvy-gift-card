@@ -2,30 +2,12 @@
 
 namespace DigiTickets\Savvy\Messages;
 
-class RefundRequest extends AbstractSavvyRequest
+use Omnipay\Common\Message\RequestInterface;
+
+class RefundRequest extends UnredeemRequest
 {
-    protected function getEndpoint()
+    protected function buildResponse(RequestInterface $request, $response, string $token = null)
     {
-        return 'reverse';
-    }
-
-    public function getData()
-    {
-        return [
-            'requestId' => $this->generateGuid(),
-            'adminTeamId' => $this->getAdminTeamId(),
-            'merchantId' => $this->getMerchantId(),
-            'cardNumber' => $this->getTransactionReference(),
-            'currency' => $this->determineCurrencyNumber(),
-            'amount' => (float) $this->getAmount(), // API endpoint crashes if this is not a float!
-            'authCode' => (int) $this->getAuthCode(), // API endpoint crashes if this is not an integer!
-        ];
-    }
-
-    public function sendData($data)
-    {
-        $rawResponse = $this->sendMessage($data);
-
-        return $this->response = new RefundResponse($this, $rawResponse, $this->getToken());
+        return new RefundResponse($request, $response, $token);
     }
 }

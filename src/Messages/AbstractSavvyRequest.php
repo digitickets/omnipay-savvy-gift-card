@@ -3,10 +3,23 @@
 namespace DigiTickets\Savvy\Messages;
 
 use Omnipay\Common\Message\AbstractRequest;
+use Omnipay\Common\Message\RequestInterface;
 
 abstract class AbstractSavvyRequest extends AbstractRequest
 {
     abstract protected function getEndpoint();
+
+    /**
+     * This method is here because several request classes subclass other request classes, and each one needs to
+     * return an instance of the correct response class.
+     *
+     * @param RequestInterface $request
+     * @param $response
+     * @param string|null $token
+     *
+     * @return AbstractSavvyResponse
+     */
+    abstract protected function buildResponse(RequestInterface $request, $response, string $token = null);
 
     public function getUrlStem()
     {

@@ -2,6 +2,6 @@
 
 namespace DigiTickets\Savvy\Messages;
 
-class PurchaseResponse extends RedeemResponse
+class AuthorizeResponse extends ValidateResponse
 {
 }
