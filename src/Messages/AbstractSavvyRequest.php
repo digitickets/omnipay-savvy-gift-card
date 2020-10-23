@@ -89,6 +89,20 @@ abstract class AbstractSavvyRequest extends AbstractRequest
     }
 
     /**
+     * This method returns the data values that identify the merchant and the request.
+     *
+     * @return array
+     */
+    protected function makeRequestContext()
+    {
+        return [
+            'requestId' => $this->generateGuid(),
+            'adminTeamId' => $this->getAdminTeamId(),
+            'merchantId' => $this->getMerchantId(),
+        ];
+    }
+
+    /**
      * We have to extract this out because we may have an auth token, but it might have expired. If that's the case,
      * we need to try _once_ to login and re-send the message, hence needing the $firstAttempt parameter. It also
      * means this logic is in one place, rather than in each request class.
@@ -246,15 +260,5 @@ abstract class AbstractSavvyRequest extends AbstractRequest
 
     protected function getAuthCode() {
         return $this->getParameter('authCode');
-    }
-
-    public function getData()
-    {
-        // @TODO: Implement getData() method. We should be able to remove these
-    }
-
-    public function sendData($data)
-    {
-        // @TODO: Implement getData() method. We should be able to remove these
     }
 }

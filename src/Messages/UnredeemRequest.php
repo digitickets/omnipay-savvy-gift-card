@@ -13,15 +13,15 @@ class UnredeemRequest extends AbstractSavvyRequest
 
     public function getData()
     {
-        return [
-            'requestId' => $this->generateGuid(),
-            'adminTeamId' => $this->getAdminTeamId(),
-            'merchantId' => $this->getMerchantId(),
-            'cardNumber' => $this->getTransactionReference(),
-            'currency' => $this->determineCurrencyNumber(),
-            'amount' => (float) $this->getAmount(), // API endpoint crashes if this is not a float!
-            'authCode' => (int) $this->getAuthCode(), // API endpoint crashes if this is not an integer!
-        ];
+        return array_merge(
+            $this->makeRequestContext(),
+            [
+                'cardNumber' => $this->getTransactionReference(),
+                'currency' => $this->determineCurrencyNumber(),
+                'amount' => (float) $this->getAmount(), // API endpoint crashes if this is not a float!
+                'authCode' => (int) $this->getAuthCode(), // API endpoint crashes if this is not an integer!
+            ]
+        );
     }
 
     public function sendData($data)

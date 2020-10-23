@@ -13,15 +13,15 @@ class RedeemRequest extends AbstractSavvyRequest
 
     public function getData()
     {
-        return [
-            'requestId' => $this->generateGuid(),
-            'adminTeamId' => $this->getAdminTeamId(),
-            'merchantId' => $this->getMerchantId(),
-            'cardNumber' => $this->getCardNumber(),
-            'pin' => $this->getPin(),
-            'currency' => $this->determineCurrencyNumber(),
-            'amount' => (float) $this->getAmount(), // API endpoint crashes if this is not a float!
-        ];
+        return array_merge(
+            $this->makeRequestContext(),
+            [
+                'cardNumber' => $this->getCardNumber(),
+                'currency' => $this->determineCurrencyNumber(),
+                'amount' => (float)$this->getAmount(), // API endpoint crashes if this is not a float!
+                'pin' => $this->getPin(),
+            ]
+        );
     }
 
     public function sendData($data)

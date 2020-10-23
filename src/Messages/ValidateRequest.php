@@ -13,14 +13,14 @@ class ValidateRequest extends AbstractSavvyRequest
 
     public function getData()
     {
-        return [
-            'requestId' => $this->generateGuid(),
-            'adminTeamId' => $this->getAdminTeamId(),
-            'merchantId' => $this->getMerchantId(),
-            'cardNumber' => $this->getCardNumber(),
-            'pin' => $this->getPin(),
-            'currency' => $this->determineCurrencyNumber(),
-        ];
+        return array_merge(
+            $this->makeRequestContext(),
+            [
+                'cardNumber' => $this->getCardNumber(),
+                'currency' => $this->determineCurrencyNumber(),
+                'pin' => $this->getPin(),
+            ]
+        );
     }
 
     public function sendData($data)
