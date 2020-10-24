@@ -37,6 +37,23 @@ class SavvyGateway extends AbstractVoucherGateway
         return 'Savvy Gift Card';
     }
 
+    /**
+     * Get gateway default parameters
+     *
+     * @return array
+     */
+    public function getDefaultParameters() : array
+    {
+        return [
+            'adminTeamId' => '',
+            'merchantId' => '',
+            'password' => '',
+            'connectDirectSubscriptionKey' => '',
+            'usePIN' => true,
+            'testMode' => true,
+        ];
+    }
+
     protected function createRequest($class, array $parameters)
     {
         $parameters['gateway'] = $this;
@@ -101,5 +118,9 @@ class SavvyGateway extends AbstractVoucherGateway
 
     public function setConnectDirectSubscriptionKey($value) {
         $this->setParameter('connectDirectSubscriptionKey', $value);
+    }
+
+    public function setUsePIN($value) {
+        $this->setParameter('usePIN', $value);
     }
 }

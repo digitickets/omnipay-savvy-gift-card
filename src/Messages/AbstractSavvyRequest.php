@@ -220,6 +220,14 @@ abstract class AbstractSavvyRequest extends AbstractRequest
         return $this->getParameter('connectDirectSubscriptionKey');
     }
 
+    public function setUsePIN($value) {
+        $this->setParameter('usePIN', $value);
+    }
+
+    protected function getUsePIN() {
+        return $this->getParameter('usePIN');
+    }
+
     /**
      * This is just a wrapper around setCardNumber() in case an application passes the card number in as "voucherCode".
      *
