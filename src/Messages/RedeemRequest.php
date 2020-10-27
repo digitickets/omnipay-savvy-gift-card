@@ -2,6 +2,7 @@
 
 namespace DigiTickets\Savvy\Messages;
 
+use DigiTickets\Savvy\SavvyGateway;
 use Omnipay\Common\Message\RequestInterface;
 
 class RedeemRequest extends AbstractSavvyRequest
@@ -32,7 +33,38 @@ class RedeemRequest extends AbstractSavvyRequest
 
     public function sendData($data)
     {
+ini_set('display_errors', 1);
+//\DigiTickets\Applications\Commands\Personal\Debug::clearFile();
         $rawResponse = $this->sendMessage($data);
+\DigiTickets\Applications\Commands\Personal\Debug::log('$rawResponse: '.var_export($rawResponse, true));
+        // @TODO: Need to add the test for this - parameter "reverseOnInsufficientFunds".
+        // @TODO: Comment it properly.
+        if (property_exists($rawResponse, 'responseCode') &&
+            property_exists($rawResponse, 'amount') &&
+            property_exists($rawResponse, 'authCode') &&
+            $rawResponse->responseCode === 30) {
+\DigiTickets\Applications\Commands\Personal\Debug::log('Response code is 30');
+            $requestParameters = $this->getParameters();
+            unset($requestParameters['gateway']); // @TODO: Note that the gateway gets added by the refund method.
+            // @TODO: Need to say we need to add these.
+            $requestParameters['amount'] = $rawResponse->amount;
+            $requestParameters['authCode'] = $rawResponse->authCode;
+            $requestParameters['transactionReference'] = $rawResponse->cardNumber;
+
+\DigiTickets\Applications\Commands\Personal\Debug::log('$this->getParameters(): '.var_export($requestParameters, true));
+            /** @var SavvyGateway $gateway */
+            $gateway = $this->getGateway();
+            $unredeemRequest = $gateway->unredeem($requestParameters);
+\DigiTickets\Applications\Commands\Personal\Debug::log('We have the unredeem request.. sending it');
+try {
+            $unredeemResponse = $unredeemRequest->send();
+} catch (\Exception $e) {
+\DigiTickets\Applications\Commands\Personal\Debug::log('Exception message: '.$e->getMessage());
+    throw $e;
+}
+\DigiTickets\Applications\Commands\Personal\Debug::log('After sending unredeem request');
+\DigiTickets\Applications\Commands\Personal\Debug::log('$unredeemResponse: '.var_export($unredeemResponse, true));
+        }
 
         return $this->response = $this->buildResponse($this, $rawResponse, $this->getToken());
     }

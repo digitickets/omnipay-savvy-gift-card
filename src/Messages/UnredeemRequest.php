@@ -26,7 +26,9 @@ class UnredeemRequest extends AbstractSavvyRequest
 
     public function sendData($data)
     {
+\DigiTickets\Applications\Commands\Personal\Debug::log('Unredeem $data: '.var_export($data, true));
         $rawResponse = $this->sendMessage($data);
+\DigiTickets\Applications\Commands\Personal\Debug::log('Unredeem $rawResponse: '.var_export($rawResponse, true));
 
         return $this->response = $this->buildResponse($this, $rawResponse, $this->getToken());
     }

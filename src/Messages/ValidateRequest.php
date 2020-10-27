@@ -37,7 +37,10 @@ class ValidateRequest extends AbstractSavvyRequest
 
         // Send all the information to any listeners.
         foreach ($this->getGateway()->getListeners() as $listener) {
-            $listener->update('validateRequestSend' /*$this->getListenerAction()*/, $rawResponse);
+            $listener->update(
+                $this->getUsePIN() === true ? 'validateRequestSendWithPIN' : 'validateRequestSendWithoutPIN',
+                $rawResponse
+            );
         }
 
         return $this->response = $this->buildResponse($this, $rawResponse, $this->getToken());
