@@ -34,7 +34,7 @@ class RedeemResponse extends AbstractSavvyResponse
         } else {
             $this->message = property_exists($this->response, 'responseText') ? $this->response->responseText : 'Unknown error';
             if ($responseCode === 30) {
-                $this->message = 'Insufficient funds';
+                $this->message = 'Insufficient funds on Gift Card';
                 $this->cardNumber = $cardNumber;
             }
         }
