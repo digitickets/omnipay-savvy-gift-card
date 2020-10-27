@@ -56,14 +56,9 @@ ini_set('display_errors', 1);
             $gateway = $this->getGateway();
             $unredeemRequest = $gateway->unredeem($requestParameters);
 \DigiTickets\Applications\Commands\Personal\Debug::log('We have the unredeem request.. sending it');
-try {
             $unredeemResponse = $unredeemRequest->send();
-} catch (\Exception $e) {
-\DigiTickets\Applications\Commands\Personal\Debug::log('Exception message: '.$e->getMessage());
-    throw $e;
-}
 \DigiTickets\Applications\Commands\Personal\Debug::log('After sending unredeem request');
-\DigiTickets\Applications\Commands\Personal\Debug::log('$unredeemResponse: '.var_export($unredeemResponse, true));
+\DigiTickets\Applications\Commands\Personal\Debug::log('$unredeemResponse was successful: '.var_export($unredeemResponse->isSuccessful(), true));
         }
 
         return $this->response = $this->buildResponse($this, $rawResponse, $this->getToken());

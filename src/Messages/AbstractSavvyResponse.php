@@ -33,7 +33,7 @@ abstract class AbstractSavvyResponse extends AbstractResponse implements Voucher
      */
     public function getMessage()
     {
-        $this->message;
+        return $this->message;
     }
 
     /**
