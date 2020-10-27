@@ -55,9 +55,9 @@ class RedeemRequest extends AbstractSavvyRequest
                 /** @var SavvyGateway $gateway */
                 $gateway = $this->getGateway();
                 $unredeemRequest = $gateway->unredeem($requestParameters);
-                $unredeemResponse = $unredeemRequest->send();
+                $unredeemRequest->send();
             } else {
-                $rawResponse->responseCode = 0; // Pretend it was succsessful.
+                $rawResponse->responseCode = 0; // Pretend it was successful.
             }
         }
 

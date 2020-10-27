@@ -8,7 +8,7 @@ class ValidateRequest extends AbstractSavvyRequest
 {
     protected function getEndpoint()
     {
-        // The engpoints are different between using a PIN and not using one.
+        // The endpoints are different between using a PIN and not using one.
         return $this->getUsePIN() === true ? 'balance' : 'balancenopin';
     }
 

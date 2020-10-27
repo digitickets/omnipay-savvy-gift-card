@@ -8,6 +8,7 @@ use Omnipay\Common\Message\RequestInterface;
 
 abstract class AbstractSavvyResponse extends AbstractResponse implements VoucherResponseInterface
 {
+    protected $response;
     protected $success;
     protected $message;
     protected $token;
