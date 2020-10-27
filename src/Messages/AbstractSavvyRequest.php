@@ -228,6 +228,16 @@ abstract class AbstractSavvyRequest extends AbstractRequest
         return $this->getParameter('usePIN');
     }
 
+    public function setFailOnInsufficientFunds($value) {
+\DigiTickets\Applications\Commands\Personal\Debug::log('(Request) Setting fail on insuff funds to: '.var_export($value, true));
+        $this->setParameter('failOnInsufficientFunds', $value);
+    }
+
+    protected function getFailOnInsufficientFunds() {
+\DigiTickets\Applications\Commands\Personal\Debug::log('(Request) returning fail on insuff funds to: '.var_export($this->getParameter('failOnInsufficientFunds'), true));
+        return $this->getParameter('failOnInsufficientFunds');
+    }
+
     /**
      * This is just a wrapper around setCardNumber() in case an application passes the card number in as "voucherCode".
      *

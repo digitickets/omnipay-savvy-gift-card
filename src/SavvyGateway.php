@@ -50,6 +50,7 @@ class SavvyGateway extends AbstractVoucherGateway
             'password' => '',
             'connectDirectSubscriptionKey' => '',
             'usePIN' => true,
+            'failOnInsufficientFunds' => true,
             'testMode' => true,
         ];
     }
@@ -122,5 +123,18 @@ class SavvyGateway extends AbstractVoucherGateway
 
     public function setUsePIN($value) {
         $this->setParameter('usePIN', $value);
+    }
+
+    /**
+     * By default, if you try to redeem more money than is on the card, the provider redeems whatever is left on the
+     * card and returns a response code of 30. This is not ideal (because money is taken off the card but an error state
+     * is returned), so this parameter says that if this happens then revert the transaction and treat it as an error.
+     * Setting this to false will do the default action, which the merchant system must then check for by checking the
+     * error codes, amount, etc.
+     * @param $value
+     */
+    public function setFailOnInsufficientFunds($value) {
+\DigiTickets\Applications\Commands\Personal\Debug::log('(gateway) Setting fail on insuff funds to: '.var_export($value, true));
+        $this->setParameter('failOnInsufficientFunds', $value);
     }
 }

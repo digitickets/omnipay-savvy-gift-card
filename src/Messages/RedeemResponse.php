@@ -6,6 +6,14 @@ class RedeemResponse extends AbstractSavvyResponse
 {
     private $cardNumber;
     private $authCode;
+    /**
+     * We have to expose the amount because if the gateway returns a response code of 30 and the merchant says that's
+     * okay, it means the gateway has taken as much off the card as it could (which is obviously different to the
+     * amount requested) and we have converted the response code to 0 (meaning success). The response then looks like
+     * it was successful, but the merchant must compare the amount with the amount requested, and if different, handle
+     * it.
+     * @var float
+     */
     private $amount;
 
     protected function init()
