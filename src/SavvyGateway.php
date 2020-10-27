@@ -134,7 +134,6 @@ class SavvyGateway extends AbstractVoucherGateway
      * @param $value
      */
     public function setFailOnInsufficientFunds($value) {
-\DigiTickets\Applications\Commands\Personal\Debug::log('(gateway) Setting fail on insuff funds to: '.var_export($value, true));
         $this->setParameter('failOnInsufficientFunds', $value);
     }
 }

@@ -229,12 +229,10 @@ abstract class AbstractSavvyRequest extends AbstractRequest
     }
 
     public function setFailOnInsufficientFunds($value) {
-\DigiTickets\Applications\Commands\Personal\Debug::log('(Request) Setting fail on insuff funds to: '.var_export($value, true));
         $this->setParameter('failOnInsufficientFunds', $value);
     }
 
     protected function getFailOnInsufficientFunds() {
-\DigiTickets\Applications\Commands\Personal\Debug::log('(Request) returning fail on insuff funds to: '.var_export($this->getParameter('failOnInsufficientFunds'), true));
         return $this->getParameter('failOnInsufficientFunds');
     }
 
