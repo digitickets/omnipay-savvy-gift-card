@@ -34,30 +34,32 @@ class RedeemRequest extends AbstractSavvyRequest
     public function sendData($data)
     {
         $rawResponse = $this->sendMessage($data);
-        // @TODO: Need to add the test for this - parameter "reverseOnInsufficientFunds".
-        // @TODO: Comment it properly.
         if (property_exists($rawResponse, 'responseCode') &&
             property_exists($rawResponse, 'amount') &&
             property_exists($rawResponse, 'authCode') &&
             $rawResponse->responseCode === 30) {
             // There weren't sufficient funds on the card, but the gateway has taken everything off that it can. If the
             // merchant says this is not good, then we revert the transaction and treat it as an error.
-            // If the merchant is okay with it, we treat it as successful, but build the reponse in such a way that it's
-            // possible to tell what happened (including exposing the actual amount of money that was taken off).
+            // If the merchant is okay with it, we treat it as successful, but build the response in such a way that
+            // it's possible to tell what happened (including exposing the actual amount of money that was taken off).
             if ($this->getFailOnInsufficientFunds()) {
                 $requestParameters = $this->getParameters();
-                unset($requestParameters['gateway']); // @TODO: Note that the gateway gets added by the refund method.
-                // @TODO: Need to say we need to add these.
+                unset($requestParameters['gateway']); // The gateway object gets added by the unredeem request.
+                // There are a few values that are needed by the unredeem request but are not present in the original
+                // response, so we need to add them here.
                 $requestParameters['amount'] = $rawResponse->amount;
                 $requestParameters['authCode'] = $rawResponse->authCode;
                 $requestParameters['transactionReference'] = $rawResponse->cardNumber;
 
+                // We do a "real" unredeem request, as if it was the merchant doing it.
+                // We don't handle any errors here because it would just get too complicated.
                 /** @var SavvyGateway $gateway */
                 $gateway = $this->getGateway();
                 $unredeemRequest = $gateway->unredeem($requestParameters);
                 $unredeemRequest->send();
             } else {
-                $rawResponse->responseCode = 0; // Pretend it was successful.
+                // Just pretend it was successful. The response object exposes the actual amount taken off.
+                $rawResponse->responseCode = 0;
             }
         }
 

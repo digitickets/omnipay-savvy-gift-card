@@ -153,7 +153,6 @@ abstract class AbstractSavvyRequest extends AbstractRequest
     protected function generateGuid()
     {
         // Found this code online. Is there an alternative already in the system? Should this be made global?
-        // @TODO: Maybe tailor this for Savvy - "REQ_YYYYMMDD_<1st 8 chars of $charId>"?
         $charId = strtoupper(md5(uniqid(rand(), true)));
         $hyphen = chr(45); // "-"
         $uuid =
