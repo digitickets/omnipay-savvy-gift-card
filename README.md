@@ -32,7 +32,7 @@ And run composer to update your dependencies:
 
 ## What's Included
 
-The driver for Savvy Gift Cards. It allows you to validate and redeemed a card, and reverse a previous redemption.
+The driver for Savvy Gift Cards. It allows you to validate and redeem a card, and reverse a previous redemption.
 
 It supports making requests with and without a PIN.
 
@@ -54,7 +54,7 @@ repository.
 
 By default, the driver assumes that you are using PINs; it will call the endpoints that require a PIN.
 
-There is a parameter, ```usePIN```. If true, it assumes you are using PINs. If false, it assumes you are not using PINS and will call the "*nopin" endpoints where necessary. It defaults to true.
+There is a parameter, ```usePIN```. If true, it assumes you are using PINs. If false, it assumes you are not using PINs and will call the "*nopin" endpoints where necessary. It defaults to true.
 
 ### Handling redemptions with insufficient funds
 
