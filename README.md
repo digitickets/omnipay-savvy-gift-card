@@ -36,6 +36,8 @@ The driver for Savvy Gift Cards. It allows you to validate and redeemed a card, 
 
 It supports making requests with and without a PIN.
 
+It can automatically revert a redemption where there were insufficient funds.
+
 ## What's Not Included
 
 
@@ -47,6 +49,22 @@ Use the voucher-type requests when you're treating the vouchers as vouchers; use
 
 For general Omnipay usage instructions, please see the main [Omnipay](https://github.com/omnipay/omnipay)
 repository.
+
+### Running with/without a PIN
+
+By default, the driver assumes that you are using PINs; it will call the endpoints that require a PIN.
+
+There is a parameter, ```usePIN```. If true, it assumes you are using PINs. If false, it assumes you are not using PINS and will call the "*nopin" endpoints where necessary. It defaults to true.
+
+### Handling redemptions with insufficient funds
+
+If you attempt to redeem a gift card where the redemption amount is greater than the current balance on the card, the API will reduce the current balance to zero and return a response code of "30".
+
+This is not ideal as money has been taken off the card, but the API returns an error.
+
+There is therefore a parameter, ```failOnInsufficientFunds``` to say what to do. If true, it will immediately revert the redemption (so the card ends up with the balance that it started with) and will return the original, error, response.
+
+If set to false, it will simply adjust the response to have a response code of "0" and an amount equal to the actual amount taken off the card, and do nothing else. In this case, it's up to the merchant to compare the requested amount with the response amount to detect if there were insufficient funds.
 
 ## Support
 
