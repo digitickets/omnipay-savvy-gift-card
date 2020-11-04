@@ -40,6 +40,7 @@ It can automatically revert a redemption where there were insufficient funds.
 
 ## What's Not Included
 
+This driver does not handle any of the other card management operations, such as loading a card, unfreezing, unloading, doing an ad hoc refund, etc.
 
 ## Basic Usage
 

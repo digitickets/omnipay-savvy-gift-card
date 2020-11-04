@@ -124,7 +124,7 @@ abstract class AbstractSavvyRequest extends AbstractRequest
                 ->getBody();
             $rawResponse = json_decode($responseBody); // Decode to stdClass
         } catch (\Exception $e) {
-            $message = (string) $e->getMessage();
+            $message = $e->getMessage();
             // If this is the first attempt to send the message and the exception was because the auth token is
             // invalid, we need to explicitly log in (thereby refreshing the token) and try again.
             // It's hard to know how to reliably test for that specific error. We can't test the status code because
@@ -184,7 +184,7 @@ abstract class AbstractSavvyRequest extends AbstractRequest
         ];
         $currencyCode = $this->getCurrency();
 
-        return (array_key_exists($currencyCode, $map) ? $map[$currencyCode] : $currencyCode );
+        return $map[$currencyCode] ?? $currencyCode;
     }
 
     public function setAdminTeamId($value) {
