@@ -103,35 +103,49 @@ abstract class AbstractSavvyRequest extends AbstractRequest
     }
 
     /**
-     * We have to extract this out because we may have an auth token, but it might have expired. If that's the case,
-     * we need to try _once_ to login and re-send the message, hence needing the $firstAttempt parameter. It also
-     * means this logic is in one place, rather than in each request class.
+     * Internal method for sending the given data to the appropriate endpoint. It is separate because sometimes it
+     * needs to be done twice. If we have a token, but it has expired, we don't know until we make the first call.
+     * If the first call fails because of an expired token, we must explicitly log in, then call this again.
      *
-     * @param $data
-     * @param bool $firstAttempt
+     * @param array $data
      *
      * @return mixed
      */
-    protected function sendMessage($data, bool $firstAttempt = true)
+    private function trySendMessage(array $data)
+    {
+        $responseBody = $this->httpClient->post(
+            $this->getUrl(),
+            $this->buildHeaders(),
+            json_encode($data)
+        )
+            ->send()
+            ->getBody();
+
+        return json_decode($responseBody); // Decode to stdClass
+    }
+
+    /**
+     * This method has to handle there being an auth token in the session, but it having expired.
+     * If that's the case, the first call will fail and we must log in explicitly and try _once_ more to send the
+     * message.
+     *
+     * @param $data
+     *
+     * @return mixed
+     */
+    protected function sendMessage($data)
     {
         try {
-            $responseBody = $this->httpClient->post(
-                $this->getUrl(),
-                $this->buildHeaders(),
-                json_encode($data)
-            )
-                ->send()
-                ->getBody();
-            $rawResponse = json_decode($responseBody); // Decode to stdClass
+            $rawResponse = $this->trySendMessage($data);
         } catch (\Exception $e) {
             $message = $e->getMessage();
-            // If this is the first attempt to send the message and the exception was because the auth token is
+            // That was the first attempt to send the message. If the exception was because the auth token is
             // invalid, we need to explicitly log in (thereby refreshing the token) and try again.
             // It's hard to know how to reliably test for that specific error. We can't test the status code because
             // it throws an exception without instantiating the response object.
-            if ($firstAttempt && strpos($message, '401') !== false && strpos($message, 'Unauthorized') !== false) {
+            if (strpos($message, '401') !== false && strpos($message, 'Unauthorized') !== false) {
                 $this->login();
-                $rawResponse = $this->sendMessage($data, false);
+                $rawResponse = $this->trySendMessage($data);
             } else {
                 throw $e;
             }
